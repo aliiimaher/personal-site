@@ -1,33 +1,48 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api, { API_BASE_URL } from "../api";
 
 export default function Home() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    // Fetch profile data from Django API
-    axios
-      .get("http://127.0.0.1:8000/api/profile/")
+    api
+      .get("/profile/")
       .then((res) => setProfile(res.data))
       .catch((err) => console.error(err));
   }, []);
 
   if (!profile) {
-    return <div style={{ padding: "2rem" }}>Loading...</div>;
+    return <div className="card">Loading...</div>;
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>{profile.full_name}</h1>
-      <h2>{profile.job_title}</h2>
-      <p>{profile.short_bio}</p>
-      {profile.avatar_url && (
-        <img
-          src={`http://127.0.0.1:8000${profile.avatar_url}`}
-          alt="Avatar"
-          style={{ width: "150px", borderRadius: "50%", marginTop: "1rem" }}
-        />
-      )}
-    </div>
+    <section className="hero">
+      <div className="hero-main">
+        <div className="hero-kicker">Portfolio</div>
+        <h1 className="hero-name">{profile.full_name}</h1>
+        <div className="hero-role">{profile.job_title}</div>
+        <p className="hero-bio" style={{ direction: "rtl" }}>{profile.short_bio}</p>
+
+        <div className="hero-actions">
+          <a href="#contact" className="btn-primary">
+            Contact me
+          </a>
+          <a href="#portfolio" className="btn-ghost">
+            View projects
+          </a>
+        </div>
+      </div>
+
+      <div className="hero-avatar-card">
+        <div className="hero-avatar-inner">
+          {profile.avatar_url && (
+            <img
+              src={`${API_BASE_URL}${profile.avatar_url}`}
+              alt={profile.full_name}
+            />
+          )}
+        </div>
+      </div>
+    </section>
   );
 }

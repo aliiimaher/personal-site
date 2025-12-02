@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -14,7 +14,7 @@ export default function Contact() {
     setStatus("");
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/contact/", form, {
+      await api.post("/contact/", form, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -28,41 +28,40 @@ export default function Contact() {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Contact Me</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          maxWidth: "400px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5rem",
-        }}
-      >
-        <input
-          type="text"
-          name="name"
-          placeholder="Your name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <textarea
-          name="message"
-          placeholder="Your message"
-          rows={5}
-          value={form.message}
-          onChange={handleChange}
-        />
-        <button type="submit">Send</button>
-      </form>
-      {status && <p style={{ marginTop: "1rem" }}>{status}</p>}
-    </div>
+    <section id="contact">
+      <h1 className="section-title">Contact Me</h1>
+      <div className="card">
+        <form className="form" onSubmit={handleSubmit}>
+          <input
+            className="input"
+            type="text"
+            name="name"
+            placeholder="Your name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <input
+            className="input"
+            type="email"
+            name="email"
+            placeholder="Your email"
+            value={form.email}
+            onChange={handleChange}
+          />
+          <textarea
+            className="textarea"
+            name="message"
+            placeholder="Your message"
+            rows={5}
+            value={form.message}
+            onChange={handleChange}
+          />
+          <button type="submit" className="btn-primary">
+            Send message
+          </button>
+        </form>
+        {status && <div className="status">{status}</div>}
+      </div>
+    </section>
   );
 }

@@ -1,59 +1,68 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 
 export default function Resume() {
   const [skills, setSkills] = useState([]);
   const [experiences, setExperiences] = useState([]);
 
   useEffect(() => {
-    // Fetch skills
-    axios
-      .get("http://127.0.0.1:8000/api/skills/")
+    api
+      .get("/skills/")
       .then((res) => setSkills(res.data))
       .catch((err) => console.error(err));
 
-    // Fetch experiences
-    axios
-      .get("http://127.0.0.1:8000/api/experiences/")
+    api
+      .get("/experiences/")
       .then((res) => setExperiences(res.data))
       .catch((err) => console.error(err));
   }, []);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Resume</h1>
+    <section>
+      <h1 className="section-title">Resume</h1>
 
-      <section>
-        <h2>Skills</h2>
-        <ul>
+      <div className="card" style={{ marginBottom: "1.8rem" }}>
+        <h2 style={{ marginTop: 0, marginBottom: "1rem", fontSize: "1.1rem" }}>
+          Skills
+        </h2>
+        <div className="grid-skills">
           {skills.map((skill, index) => (
-            <li key={index}>
-              {skill.name} - {skill.level}%
-              {skill.category && ` (${skill.category})`}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={{ marginTop: "2rem" }}>
-        <h2>Experience</h2>
-        <ul>
-          {experiences.map((exp, index) => (
-            <li key={index}>
-              <strong>
-                {exp.position} @ {exp.company}
-              </strong>
-              <br />
+            <div key={index} className="skill-pill">
               <span>
-                {exp.start_date} -{" "}
-                {exp.is_current ? "Present" : exp.end_date || "N/A"}
+                {skill.name}
+                {skill.category ? ` · ${skill.category}` : ""}
               </span>
-              <br />
-              <span>{exp.description}</span>
-            </li>
+              <div className="skill-level-bar">
+                <div
+                  className="skill-level-fill"
+                  style={{ width: `${skill.level}%` }}
+                />
+              </div>
+            </div>
           ))}
-        </ul>
-      </section>
-    </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0, marginBottom: "1rem", fontSize: "1.1rem" }}>
+          Experience
+        </h2>
+        <div className="timeline">
+          {experiences.map((exp, index) => (
+            <div key={index} className="timeline-item">
+              <div className="timeline-item-title">
+                {exp.position} @ {exp.company}
+              </div>
+              <div className="timeline-item-meta">
+                {exp.start_date} - {exp.is_current ? "Present" : exp.end_date}
+              </div>
+              {exp.description && (
+                <div style={{ fontSize: "0.9rem", direction: "rtl" }}>{exp.description}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
